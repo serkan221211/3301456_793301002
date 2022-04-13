@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:untitled7/ekran/Satis_list.dart';
+import 'package:untitled7/ekran/map.dart';
 import 'Musteri_list.dart';
 import 'MüşteriKayit.dart';
 import 'Satıs_ekleme.dart';
@@ -66,7 +68,11 @@ class _MyDrawerState extends State {
               title: Text('SATIŞLAR'),
               // subtitle: Text("This is the 1st item"),
               trailing: Icon(Icons.arrow_right_outlined,size: 35,),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Satis_list()));
+              },
             ),
             ListTile//yeni satış
               (
@@ -77,7 +83,7 @@ class _MyDrawerState extends State {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Satis_ekleme()));
+                    MaterialPageRoute(builder: (context) => aa()));
 
 
               },
@@ -85,11 +91,13 @@ class _MyDrawerState extends State {
             ListTile//harita
               (
               leading: Icon(Icons.location_on_outlined, size: 30,),
-              title: Text('HARİTA'),
+              title: Text('HARİTA',),
               // subtitle: Text("This is the 1st item"),
               trailing: Icon(Icons.arrow_right_outlined,size: 35,),
               onTap: () {
-
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => map()));
               },
             ),
             Container(height: 340,),

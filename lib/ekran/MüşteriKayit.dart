@@ -1,12 +1,15 @@
 
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:map_launcher/map_launcher.dart';
-import 'package:untitled7/HomePage.dart';
-import 'package:untitled7/m%C3%BCsteri_model.dart';
+import 'package:untitled7/ekran/HomePage.dart';
+import 'package:untitled7/model/m%C3%BCsteri_model.dart';
+import 'package:uuid/uuid.dart';
 
 
 class Musteri_kayit extends StatefulWidget {
@@ -20,7 +23,7 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
 
   String currentAddress = 'My Address';
    Position? currentposition;
-   String location = "";
+   String? location = "";
 
   Future<Position?> _determinePosition() async {
     bool serviceEnabled;
@@ -61,11 +64,13 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
         location = position.latitude.toString() + " , " + position.longitude.toString();
         enlemm=  position.latitude.toString();
         boylamm=position.longitude.toString();
+        tfkonum.text=location.toString();
       });
     } catch (e) {
       print(e);
     }
   }
+  var uuid = Uuid();
   String enlemm="";
   String boylamm="";
    musteri_bil? m1;
@@ -79,9 +84,15 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
   TextEditingController tfadres= TextEditingController();
   TextEditingController tfsurname= TextEditingController();
   TextEditingController tfkonum= TextEditingController();
+
+
+
   void basicPostRequest(musteri_bil m) async {
 
-    var response = await Dio().post("https://serkanjson.herokuapp.com/customers", data: m.toJson());
+    var response = await Dio().post("https://satis-otomasyon-api.herokuapp.com/customers", data: m.toJson(),options: Options(followRedirects: false,
+    // will not throw errors
+    validateStatus: (status) => true,
+   ));
     print(response);
 
   }
@@ -329,7 +340,7 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                       //  textCapitalization: TextCapitalization.characters,//büyük harf
                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                       decoration: InputDecoration(
-                          hintText: currentposition == null ? "null" : location,
+                          hintText: "Konum",
                           hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
                           prefixIcon: Icon(Icons.add_location),
                           label:Text("KONUM"),
@@ -356,12 +367,57 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                       print("Konum Alındı");
                       await _determinePosition();
                     final availableMaps = await MapLauncher.installedMaps;
+                    if(availableMaps!=null)
+                      {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            elevation: 10.0,
+                            margin: EdgeInsets.all(10),
+                            content: const Text('Konum Alma Başarılı.',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(12))),
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(milliseconds: 4000),
+                            backgroundColor: Colors.green,
+                            action: SnackBarAction(
+                              textColor: Colors.white,
+
+                              label: 'Tamam',
+                              onPressed: () {
+
+                              },
+                            ),
+                          ),);
+
+
+                      }
+                    else
+                      {
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Konum Alma Başarısız!',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                            elevation: 10.0,
+                            margin: EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(12))),
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(milliseconds: 4000),
+                            backgroundColor: Colors.red,
+                            action: SnackBarAction(
+                              textColor: Colors.white,
+
+                              label: 'Tamam',
+                              onPressed: () {
+
+                              },
+                            ),
+                          ),);
+
+                      }
                     print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
 
-                    await availableMaps.first.showMarker(
-                      coords: Coords(currentposition!.latitude, currentposition!.longitude),
-                      title: "Müşteri Adı",
-                    );
+
                       }, child: Text("Konum Al", style: TextStyle(color: Colors.white,fontSize: 16),
                     )
                     ),
@@ -391,7 +447,7 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
 
           setState(() {
             try {
-              m1=musteri_bil(id: "1",companyName: tfnameI.text,name: tfname.text,surname: tfsurname.text,textNumber:tfvergi.text,telephone: tfTel.text,tapdk: tftapdk.text,district: tfilce.text,address: tfadres.text,city: tfil.text,latitude:enlemm,longitude: boylamm);
+              m1=musteri_bil(id: uuid.v4().toString(),companyName: tfnameI.text,name: tfname.text,surname: tfsurname.text,textNumber:tfvergi.text,telephone: tfTel.text,tapdk: tftapdk.text,district: tfilce.text,address: tfadres.text,city: tfil.text,latitude:enlemm,longitude: boylamm);
               basicPostRequest(m1!);
               tfil.clear();tfadres.clear();tfilce.clear();tftapdk.clear();tfTel.clear();tfvergi.clear();tfsurname.clear();tfname.clear();tfnameI.clear();tfkonum.clear();
               Navigator.push(

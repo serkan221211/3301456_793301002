@@ -27,34 +27,34 @@ class musteri_bil {
         this.longitude});
 
   musteri_bil.fromJson(Map<String, dynamic> json) {
-    id = json['Id'];
-    companyName = json['CompanyName'];
-    name = json['Name'];
-    surname = json['Surname'];
-    textNumber = json['TextNumber'];
+    id = json['id'];
+    companyName = json['companyName'];
+    name = json['name'];
+    surname = json['surname'];
+    textNumber = json['textNumber'];
     telephone = json['telephone'];
-    tapdk = json['Tapdk'];
-    city = json['City'];
-    district = json['District'];
-    address = json['Address'];
-    latitude = json['Latitude'];
-    longitude = json['Longitude'];
+    tapdk = json['tapdk'];
+    city = json['city'];
+    district = json['district'];
+    address = json['address'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Id'] = this.id;
-    data['CompanyName'] = this.companyName;
-    data['Name'] = this.name;
-    data['Surname'] = this.surname;
-    data['TextNumber'] = this.textNumber;
+    data['id'] = this.id;
+    data['companyName'] = this.companyName;
+    data['name'] = this.name;
+    data['surname'] = this.surname;
+    data['textNumber'] = this.textNumber;
     data['telephone'] = this.telephone;
-    data['Tapdk'] = this.tapdk;
-    data['City'] = this.city;
-    data['District'] = this.district;
-    data['Address'] = this.address;
-    data['Latitude'] = this.latitude;
-    data['Longitude'] = this.longitude;
+    data['tapdk'] = this.tapdk;
+    data['city'] = this.city;
+    data['district'] = this.district;
+    data['address'] = this.address;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
     return data;
   }
 }

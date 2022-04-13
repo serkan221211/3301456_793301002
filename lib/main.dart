@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'HomePage.dart';
-import 'MüşteriKayit.dart';
+import 'ekran/HomePage.dart';
+
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
