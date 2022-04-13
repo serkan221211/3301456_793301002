@@ -157,12 +157,18 @@ class _SOFState extends State<SOF> {
             onTap: ()
             {
               for (int i = 0; i < cards.length; i++) {
-                adet[i].text="0";
-                money[i].text="0";
                 var name =name1[i].text;
                 var adett = adet[i].text;
                 var fiyat = money[i].text;
-            sum[i].text=(int.parse(adett)*int.parse(fiyat)).toString()+" "+"TL";
+                try
+                {
+                  sum[i].text=(double.parse(adett)*double.parse(fiyat)).toString()+" "+"TL";
+                }
+                catch(e)
+              {
+                print("ondalıklı sayılarda virgül kullanmayınız");
+              }
+
 
               }
 
