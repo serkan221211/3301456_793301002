@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../model/müsteri_model.dart';
 
 class aa extends StatelessWidget {
   const aa({Key? key}) : super(key: key);
@@ -128,12 +131,97 @@ class _SOFState extends State<SOF> {
     );
 
   }
+  Future<List<musteri_bil>> getData() async {
+    try {
 
+      var response = await Dio().get("https://satis-otomasyon-api.herokuapp.com/customers");
+      if(response!=null)
+        {
+          setState(() {
+            var jsona = jsonEncode(response.data);
+            dataa = (json.decode(jsona) as List)
+                .map((data) => musteri_bil.fromJson(data))
+                .toList();
+            print(dataa);
+
+          });
+          loaad=true;
+          print("serkan:"+dataa.length.toString());
+          dropdownValue=dataa.first.companyName.toString();
+          print(dropdownValue);
+        }
+      else
+        {
+          print("object"+response.toString());
+          loaad=false;
+        }
+
+    }
+    catch (e) {
+      print(e);
+    }
+    return dataa;
+  }
+  var _standards = <musteri_bil>[];
+  List<musteri_bil> dataa = [];
   @override
   void initState() {
+    getData();
     super.initState();
     cards.add(createCard());
+    _standards=dataa;
+
   }
+
+
+  var bodyProgress = new Container(
+    child: new Stack(
+      children: <Widget>[
+        new Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70,
+          ),
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.blue[200],
+                borderRadius: new BorderRadius.circular(10.0)
+            ),
+            width: 300.0,
+            height: 200.0,
+            alignment: AlignmentDirectional.center,
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Center(
+                  child: new SizedBox(
+                    height: 50.0,
+                    width: 50.0,
+                    child: new CircularProgressIndicator(
+                      value: null,
+                      strokeWidth: 7.0,
+                    ),
+                  ),
+                ),
+                new Container(
+                  margin: const EdgeInsets.only(top: 25.0),
+                  child: new Center(
+                    child: new Text(
+                      "Müşteri Listesi Yükleniyor...",
+                      style: new TextStyle(
+                          color: Colors.white
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
   _onDone() {
     List<PersonEntry> entries = [];
@@ -147,96 +235,115 @@ class _SOFState extends State<SOF> {
     Navigator.pop(context, entries);
   }
 
-  List<String> aa=["aa","sasa,","ssdsd","sds"];
-  String dropdownValue ="aa";
+  List<String> aa=["MEDYA TİCARET","ENES TİCARET,","YILDIZ TİCARET","ABC TOBACCO","ASD TOBACCO","ADFS TOBACCO","ASASAA TOBACCO","ADSS TOBACCO"];
+  String dropdownValue="";
+    bool loaad=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Satış"),
       ),
-      body: Column(
-        children: <Widget>[
-      Container(
-        width: 200,
-        child: DropdownButton<String>(
-        value: dropdownValue,
-          icon: const Icon(Icons.add_business_outlined),
-          elevation: 16,
-          style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 1,
-            color: Colors.deepPurpleAccent,
+      body: loaad?Center(
+        child: Column(
+          children: <Widget>[
+        DropdownButton<String>(
+          borderRadius:BorderRadius.all(Radius.circular(20)),
+           value:dropdownValue,
+          icon: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: const Icon(Icons.add_business_outlined),
           ),
+          iconEnabledColor: Colors.blue,
+          alignment: Alignment.center,
+          elevation: 16,
+          autofocus: false,
+          isDense: false,
+          menuMaxHeight: 250,
+          dropdownColor: Colors.white,
+          style: const TextStyle(color: Colors.blue),
+
+          underline: DropdownButtonHideUnderline(child: Container()),
           onChanged: (String? newValue) {
             setState(() {
               dropdownValue = newValue!;
+              print(dropdownValue);
             });
           },
-          items: aa.map<DropdownMenuItem<String>>((String value) {
+
+          items: dataa
+              .map<DropdownMenuItem<String>>((musteri_bil standard) {
             return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
+              value: standard.companyName,
+              child: Text(standard.companyName.toString()),
             );
           }).toList(),
         ),
-      ),
 
-          Expanded(
-            child: ListView.builder(
-              itemCount: cards.length,
-              itemBuilder: (BuildContext context,  int index) {
+            Expanded(
+              child: ListView.builder(
+                itemCount: cards.length,
+                itemBuilder: (BuildContext context,  int index) {
 
-                return Container(
-                  child: ListBody(
-                    children: [
+                  return Container(
+                    child: ListBody(
+                      children: [
 
-                      Padding(
-                        padding: const EdgeInsets.only(left: 155),
-                        child: Row(
-                          children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 155),
+                          child: Row(
+                            children: [
 
-                            Text('Ürün ${index+ 1}',style: TextStyle(fontWeight: FontWeight.bold,),),
-                            IconButton(onPressed:(){
-                              setState(() {
-                                cards.removeAt(index);
-                              });
-                            },  icon: Icon(Icons.delete),
-                            ),
+                              Text('Ürün ${index+ 1}',style: TextStyle(fontWeight: FontWeight.bold,),),
+                              IconButton(onPressed:(){
+                                setState(() {
+                                  cards.removeAt(index);
+                                });
+                              },  icon: Icon(Icons.delete),
+                              ),
 
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
 
-                      cards[index],
+                        cards[index],
 
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
 
+              ),
             ),
-          ),
 
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextButton(
-              child: Text('Yeni Ürün Ekle'),
-              onPressed: ()
-              {
-                setState(() {
-                  cards.add(createCard());
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextButton(
+                child: Text('Yeni Ürün Ekle'),
+                onPressed: ()
+                {
+                  setState(() {
+                    cards.add(createCard());
 
-                }
+                  }
 
-                );
-              },
-            ),
-          )
-        ],
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ):bodyProgress,
+      floatingActionButton: new Visibility(
+        visible: loaad,
+        child: new FloatingActionButton(
+          onPressed: (){
+
+          },
+          tooltip: 'Kaydet',
+          child: new Icon(Icons.done),
+        ),
       ),
-      floatingActionButton:
-      FloatingActionButton(child: Icon(Icons.done), onPressed: _onDone),
     );
   }
 }
