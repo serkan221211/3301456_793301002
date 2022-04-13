@@ -59,7 +59,9 @@ class _SOFState extends State<SOF> {
                 keyboardType:TextInputType.name,
                 controller: nameController,
 
-
+                onTap: (){
+                  sum1.text=dropdownValue.toString();//geçiçi
+                },
             ),
           ),
           Padding(
@@ -144,7 +146,9 @@ class _SOFState extends State<SOF> {
     }
     Navigator.pop(context, entries);
   }
-  late int indis;
+
+  List<String> aa=["aa","sasa,","ssdsd","sds"];
+  String dropdownValue ="aa";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,32 +157,36 @@ class _SOFState extends State<SOF> {
       ),
       body: Column(
         children: <Widget>[
-          TextField(//geçici
-            onTap: ()
-            {
-              for (int i = 0; i < cards.length; i++) {
-                var name =name1[i].text;
-                var adett = adet[i].text;
-                var fiyat = money[i].text;
-                try
-                {
-                  sum[i].text=(double.parse(adett)*double.parse(fiyat)).toString()+" "+"TL";
-                }
-                catch(e)
-              {
-                print("ondalıklı sayılarda virgül kullanmayınız");
-              }
-
-
-              }
-
-            },),
+      Container(
+        width: 200,
+        child: DropdownButton<String>(
+        value: dropdownValue,
+          icon: const Icon(Icons.add_business_outlined),
+          elevation: 16,
+          style: const TextStyle(color: Colors.deepPurple),
+          underline: Container(
+            height: 1,
+            color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue = newValue!;
+            });
+          },
+          items: aa.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
 
           Expanded(
             child: ListView.builder(
               itemCount: cards.length,
               itemBuilder: (BuildContext context,  int index) {
-              indis=index;
+
                 return Container(
                   child: ListBody(
                     children: [
