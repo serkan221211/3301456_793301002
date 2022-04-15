@@ -36,9 +36,9 @@ class _SOFState extends State<SOF> {
     adet.add(adetController);
     money.add(fiyatController);
     sum.add(sum1);
-    adetController.text="0";
-    fiyatController.text="0";
-    sum1.text="0"+" "+"TL";
+    adetController.text="0.0";
+    fiyatController.text="0.0";
+    sum1.text="0.0"+" "+"TL";
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -62,9 +62,6 @@ class _SOFState extends State<SOF> {
                 keyboardType:TextInputType.name,
                 controller: nameController,
 
-                onTap: (){
-                  sum1.text=dropdownValue.toString();//geçiçi
-                },
             ),
           ),
           Padding(
@@ -82,6 +79,36 @@ class _SOFState extends State<SOF> {
               ),
               keyboardType:TextInputType.number,
               controller: adetController,
+              onTap: (){
+
+                if(adetController.text.isEmpty)
+                {
+                  adetController.text="0.0";
+                }
+                if(fiyatController.text.isEmpty)
+                {
+                  fiyatController.text="0.0";
+
+                }
+              },
+              onChanged: (value_adet)
+              {
+                if(fiyatController.text.isEmpty)
+                  {
+                    fiyatController.text="0.0";
+                  }
+                if(value_adet.isEmpty)
+                  {
+                    value_adet="0";
+                    sum1.text="0.0 TL";
+                  }
+                else
+                  {
+                    value_adet=value_adet;
+                    sum1.text=(double.parse(value_adet)*double.parse(fiyatController.text)).toString()+" TL";
+                  }
+
+              },
 
 
             ),
@@ -97,11 +124,41 @@ class _SOFState extends State<SOF> {
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
                     borderRadius: BorderRadius.circular(10.0),
-                  )
+                  ),
               ),
               keyboardType:TextInputType.number,
               controller: fiyatController,
+              onTap: ()
+              {
+                if(adetController.text.isEmpty)
+                {
+                  adetController.text="0.0";
+                }
+                if(fiyatController.text.isEmpty)
+                {
+                  fiyatController.text="0.0";
 
+                }
+              },
+              onChanged: (value_fiyat)
+              {
+
+                if(adetController.text.isEmpty)
+                {
+                  adetController.text="0.0";
+                }
+                if(value_fiyat.isEmpty)
+                {
+                  value_fiyat="0.0";
+                  sum1.text="0.0 TL";
+                }
+                else
+                {
+                  value_fiyat=value_fiyat;
+                  sum1.text=(double.parse(value_fiyat)*double.parse(adetController.text)).toString()+" TL";
+                }
+
+              },
 
             ),
           ),
@@ -117,7 +174,7 @@ class _SOFState extends State<SOF> {
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
                     borderRadius: BorderRadius.circular(10.0),
-                  )
+                  ),
               ),
               keyboardType:TextInputType.number,
               controller: sum1,
@@ -162,14 +219,12 @@ class _SOFState extends State<SOF> {
     }
     return dataa;
   }
-  var _standards = <musteri_bil>[];
   List<musteri_bil> dataa = [];
   @override
   void initState() {
     getData();
     super.initState();
     cards.add(createCard());
-    _standards=dataa;
 
   }
 
@@ -210,7 +265,7 @@ class _SOFState extends State<SOF> {
                     child: new Text(
                       "Müşteri Listesi Yükleniyor...",
                       style: new TextStyle(
-                          color: Colors.white
+                          color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -235,7 +290,6 @@ class _SOFState extends State<SOF> {
     Navigator.pop(context, entries);
   }
 
-  List<String> aa=["MEDYA TİCARET","ENES TİCARET,","YILDIZ TİCARET","ABC TOBACCO","ASD TOBACCO","ADFS TOBACCO","ASASAA TOBACCO","ADSS TOBACCO"];
   String dropdownValue="";
     bool loaad=false;
   @override
@@ -247,37 +301,47 @@ class _SOFState extends State<SOF> {
       body: loaad?Center(
         child: Column(
           children: <Widget>[
-        DropdownButton<String>(
-          borderRadius:BorderRadius.all(Radius.circular(20)),
-           value:dropdownValue,
-          icon: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: const Icon(Icons.add_business_outlined),
+
+        Padding(
+          padding: const EdgeInsets.only(top: 10,bottom: 15),
+          child: SizedBox(
+
+            width: 200,
+            child: DropdownButton
+            <String>(
+              borderRadius:BorderRadius.all(Radius.circular(20)),
+               value:dropdownValue,
+              icon: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: const Icon(Icons.arrow_drop_down),
+              ),
+              iconEnabledColor: Colors.blue,
+              alignment: Alignment.center,
+              elevation: 16,
+              autofocus: false,
+              iconSize: 36,
+              isDense: false,
+              isExpanded: true,
+              menuMaxHeight: 250,
+              dropdownColor: Colors.white,
+              style: const TextStyle(color: Colors.blue,),
+
+              underline: Container(width: 10,),
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                  print(dropdownValue);
+                });
+              },
+
+              items: dataa.map<DropdownMenuItem<String>>((musteri_bil standard) {
+                return DropdownMenuItem<String>(
+                  value: standard.companyName,
+                  child: Text(standard.companyName.toString(),style: TextStyle(fontSize: 20),textAlign: TextAlign.center,),
+                );
+              }).toList(),
+            ),
           ),
-          iconEnabledColor: Colors.blue,
-          alignment: Alignment.center,
-          elevation: 16,
-          autofocus: false,
-          isDense: false,
-          menuMaxHeight: 250,
-          dropdownColor: Colors.white,
-          style: const TextStyle(color: Colors.blue),
-
-          underline: DropdownButtonHideUnderline(child: Container()),
-          onChanged: (String? newValue) {
-            setState(() {
-              dropdownValue = newValue!;
-              print(dropdownValue);
-            });
-          },
-
-          items: dataa
-              .map<DropdownMenuItem<String>>((musteri_bil standard) {
-            return DropdownMenuItem<String>(
-              value: standard.companyName,
-              child: Text(standard.companyName.toString()),
-            );
-          }).toList(),
         ),
 
             Expanded(
@@ -305,7 +369,6 @@ class _SOFState extends State<SOF> {
                             ],
                           ),
                         ),
-
                         cards[index],
 
                       ],
@@ -323,7 +386,21 @@ class _SOFState extends State<SOF> {
                 onPressed: ()
                 {
                   setState(() {
-                    cards.add(createCard());
+                    if(adet[adet.length-1].text.isNotEmpty&&money[money.length-1].text.isNotEmpty) {
+                      cards.add(createCard());
+                    }
+                    else
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Lütfen Boş Kolonları Doldurun.',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
+                          shape: StadiumBorder(),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(milliseconds: 3000),
+                          backgroundColor: Colors.blue[200],
+
+                        ),);
+                    }
 
                   }
 
