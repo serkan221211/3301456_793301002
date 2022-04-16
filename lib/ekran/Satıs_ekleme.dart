@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled7/model/deneme.dart';
 import '../model/müsteri_model.dart';
 
 class aa extends StatelessWidget {
@@ -289,6 +290,20 @@ class _SOFState extends State<SOF> {
     }
     Navigator.pop(context, entries);
   }
+  satis_1? s;
+
+
+  void PostData(satis_1 s) async {
+
+    var response = await Dio().post("https://satis-otomasyon-api.herokuapp.com/customers", data: s.toJson(),options: Options(followRedirects: false,
+      // will not throw errors
+      validateStatus: (status) => true,
+    ));
+    print("Code:"+response.statusCode.toString());
+    print("\nMessage"+response.statusMessage.toString());
+
+  }
+
 
   String dropdownValue="";
     bool loaad=false;
@@ -302,44 +317,48 @@ class _SOFState extends State<SOF> {
         child: Column(
           children: <Widget>[
 
-        Padding(
-          padding: const EdgeInsets.only(top: 10,bottom: 15),
-          child: SizedBox(
+        Center(
+          child: Padding(
 
-            width: 200,
-            child: DropdownButton
-            <String>(
-              borderRadius:BorderRadius.all(Radius.circular(20)),
-               value:dropdownValue,
-              icon: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: const Icon(Icons.arrow_drop_down),
+            padding: const EdgeInsets.only(top: 10,bottom: 15),
+            child: SizedBox(
+
+
+              child: DropdownButton
+              <String>(
+                borderRadius:BorderRadius.all(Radius.circular(20)),
+                 value:dropdownValue,
+                icon: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: const Icon(Icons.arrow_drop_down),
+                ),
+                iconEnabledColor: Colors.blue,
+                alignment: Alignment.center,
+                elevation: 16,
+                autofocus: false,
+                iconSize: 36,
+                isDense: false,
+                isExpanded: false,
+                menuMaxHeight: 250,
+                dropdownColor: Colors.white,
+                style: const TextStyle(color: Colors.blue,),
+
+                underline: Container(width: 1,),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                    print(dropdownValue);
+                  });
+                },
+
+                items: dataa.map<DropdownMenuItem<String>>((musteri_bil standard) {
+                  return DropdownMenuItem<String>(
+                    alignment: Alignment.center,
+                    value: standard.companyName,
+                    child: Text(standard.companyName.toString(),style: TextStyle(fontSize: 20),textAlign: TextAlign.center,),
+                  );
+                }).toList(),
               ),
-              iconEnabledColor: Colors.blue,
-              alignment: Alignment.center,
-              elevation: 16,
-              autofocus: false,
-              iconSize: 36,
-              isDense: false,
-              isExpanded: true,
-              menuMaxHeight: 250,
-              dropdownColor: Colors.white,
-              style: const TextStyle(color: Colors.blue,),
-
-              underline: Container(width: 10,),
-              onChanged: (String? newValue) {
-                setState(() {
-                  dropdownValue = newValue!;
-                  print(dropdownValue);
-                });
-              },
-
-              items: dataa.map<DropdownMenuItem<String>>((musteri_bil standard) {
-                return DropdownMenuItem<String>(
-                  value: standard.companyName,
-                  child: Text(standard.companyName.toString(),style: TextStyle(fontSize: 20),textAlign: TextAlign.center,),
-                );
-              }).toList(),
             ),
           ),
         ),
@@ -415,6 +434,8 @@ class _SOFState extends State<SOF> {
         visible: loaad,
         child: new FloatingActionButton(
           onPressed: (){
+            s=satis_1(company: "Medya Ticaret");
+            PostData(s!);
 
           },
           tooltip: 'Kaydet',
