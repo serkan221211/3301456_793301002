@@ -1,18 +1,22 @@
-class satis_1 {
+class deneme_1 {
   String? id;
-  String? company;
+  String? companyName;
 
-  satis_1({this.id, this.company});
+  deneme_1(
+      {this.id,
+        this.companyName,
+        });
 
-  satis_1.fromJson(Map<String, dynamic> json) {
+  deneme_1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    company = json['company'];
+    companyName = json['companyName'];
+
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['company'] = this.company;
+    data['companyName'] = this.companyName;
     return data;
   }
 }

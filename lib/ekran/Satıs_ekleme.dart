@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled7/model/deneme.dart';
+import 'package:untitled7/model/satis.dart';
 import '../model/müsteri_model.dart';
 
 class aa extends StatelessWidget {
@@ -290,20 +291,32 @@ class _SOFState extends State<SOF> {
     }
     Navigator.pop(context, entries);
   }
-  satis_1? s;
+  satis? s;
+  List<Product> product1=[];
 
+  void PostData(satis s) async {
 
-  void PostData(satis_1 s) async {
-
-    var response = await Dio().post("https://satis-otomasyon-api.herokuapp.com/customers", data: s.toJson(),options: Options(followRedirects: false,
+    Dio dio = new Dio();
+ var    response1 = await dio.post("https://satis-otomasyon-api.herokuapp.com/satis", data: s.toJson(),options: Options(followRedirects: true,
       // will not throw errors
       validateStatus: (status) => true,
     ));
-    print("Code:"+response.statusCode.toString());
-    print("\nMessage"+response.statusMessage.toString());
+    print("Code:"+response1.statusCode.toString());
+    print("\nMessage"+response1.statusMessage.toString());
 
   }
 
+  void PostData1(Product s) async {
+
+    Dio dio = new Dio();
+    var    response1 = await dio.post("https://satis-otomasyon-api.herokuapp.com/satis", data: s.toJson(),options: Options(followRedirects: true,
+      // will not throw errors
+      validateStatus: (status) => true,
+    ));
+    print("Code:"+response1.statusCode.toString());
+    print("\nMessage"+response1.statusMessage.toString());
+
+  }
 
   String dropdownValue="";
     bool loaad=false;
@@ -434,7 +447,14 @@ class _SOFState extends State<SOF> {
         visible: loaad,
         child: new FloatingActionButton(
           onPressed: (){
-            s=satis_1(company: "Medya Ticaret");
+
+
+            product1.add(new Product(id: "adsas", name: "asdas", piece: "asdasd",sum: "asdas"));
+            product1.add(new Product(id: "12", name: "as", piece: "asdasd",sum: "asdas"));
+            product1.add(new Product(id: "13", name: "fddf", piece: "asdasd",sum: "asdas"));
+            product1.add(new Product(id: "14", name: "gf", piece: "asdasd",sum: "asdas"));
+            s=satis(id: "2122221",companyName: "MEDYA",date: "12.05.2021",total: "294",product: product1);
+            print(product1.length.toString());
             PostData(s!);
 
           },

@@ -1,14 +1,16 @@
 class satis {
-  String? company;
+  String? id;
   String? date;
+  String? companyName;
   String? total;
   List<Product>? product;
 
-  satis({this.company, this.date, this.total, this.product});
+  satis({this.id, this.date, this.companyName, this.total, this.product});
 
   satis.fromJson(Map<String, dynamic> json) {
-    company = json['company'];
+    id = json['id'];
     date = json['date'];
+    companyName = json['company_name'];
     total = json['total'];
     if (json['product'] != null) {
       product = <Product>[];
@@ -20,8 +22,9 @@ class satis {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['company'] = this.company;
+    data['id'] = this.id;
     data['date'] = this.date;
+    data['company_name'] = this.companyName;
     data['total'] = this.total;
     if (this.product != null) {
       data['product'] = this.product!.map((v) => v.toJson()).toList();
@@ -31,14 +34,16 @@ class satis {
 }
 
 class Product {
+  String? id;
   String? name;
   String? piece;
   String? money;
   String? sum;
 
-  Product({this.name, this.piece, this.money, this.sum});
+  Product({this.id, this.name, this.piece, this.money, this.sum});
 
   Product.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     piece = json['piece'];
     money = json['money'];
@@ -47,6 +52,7 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['piece'] = this.piece;
     data['money'] = this.money;
