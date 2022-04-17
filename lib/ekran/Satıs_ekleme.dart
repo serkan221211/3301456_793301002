@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled7/model/deneme.dart';
 import 'package:untitled7/model/satis.dart';
+import 'package:uuid/uuid.dart';
 import '../model/müsteri_model.dart';
 
 class aa extends StatelessWidget {
@@ -40,7 +41,7 @@ class _SOFState extends State<SOF> {
     sum.add(sum1);
     adetController.text="0.0";
     fiyatController.text="0.0";
-    sum1.text="0.0"+" "+"TL";
+    sum1.text="0.0";
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -102,12 +103,12 @@ class _SOFState extends State<SOF> {
                 if(value_adet.isEmpty)
                   {
                     value_adet="0";
-                    sum1.text="0.0 TL";
+                    sum1.text="0.0";
                   }
                 else
                   {
                     value_adet=value_adet;
-                    sum1.text=(double.parse(value_adet)*double.parse(fiyatController.text)).toString()+" TL";
+                    sum1.text=(double.parse(value_adet)*double.parse(fiyatController.text)).toString();
                   }
 
               },
@@ -152,12 +153,12 @@ class _SOFState extends State<SOF> {
                 if(value_fiyat.isEmpty)
                 {
                   value_fiyat="0.0";
-                  sum1.text="0.0 TL";
+                  sum1.text="0.0";
                 }
                 else
                 {
                   value_fiyat=value_fiyat;
-                  sum1.text=(double.parse(value_fiyat)*double.parse(adetController.text)).toString()+" TL";
+                  sum1.text=(double.parse(value_fiyat)*double.parse(adetController.text)).toString();
                 }
 
               },
@@ -227,6 +228,8 @@ class _SOFState extends State<SOF> {
     getData();
     super.initState();
     cards.add(createCard());
+    product1=[];
+
 
   }
 
@@ -317,7 +320,8 @@ class _SOFState extends State<SOF> {
     print("\nMessage"+response1.statusMessage.toString());
 
   }
-
+  var uuid = Uuid();
+  var uuid1 = Uuid();
   String dropdownValue="";
     bool loaad=false;
   @override
@@ -447,13 +451,15 @@ class _SOFState extends State<SOF> {
         visible: loaad,
         child: new FloatingActionButton(
           onPressed: (){
+            double total_company=0.0;
+            for(int i=0;i<sum.length;i++)
+            {
+                total_company=double.parse(sum[i].text.toString())+total_company; 
 
+            }
 
             product1.add(new Product(id: "adsas", name: "asdas", piece: "asdasd",sum: "asdas"));
-            product1.add(new Product(id: "12", name: "as", piece: "asdasd",sum: "asdas"));
-            product1.add(new Product(id: "13", name: "fddf", piece: "asdasd",sum: "asdas"));
-            product1.add(new Product(id: "14", name: "gf", piece: "asdasd",sum: "asdas"));
-            s=satis(id: "2122221",companyName: "MEDYA",date: "12.05.2021",total: "294",product: product1);
+            s=satis(id: uuid.v4().toString(),companyName: dropdownValue,date: DateTime.now().toString(),total: total_company.toString(),product: product1);
             print(product1.length.toString());
             PostData(s!);
 
