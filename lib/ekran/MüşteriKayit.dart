@@ -425,27 +425,26 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                     width: width/4,height: height/15,
 
                     child: TextButton(onPressed: () async {
-
+                      tfkonum.text="";
                       print("Konum Alındı");
                       await _determinePosition();
                     final availableMaps = await MapLauncher.installedMaps;
-                    if(availableMaps!=null)
+                    if(location.toString().isNotEmpty)
                       {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
+
                             elevation: 10.0,
                             margin: EdgeInsets.all(height/70),
-                            content:  Text('Konum Alma Başarılı.',style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                            content:  Container(
+                                height: 20,
+                                child: Text('Konum Alma Başarılı.',style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,)),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(height/65))),
                             behavior: SnackBarBehavior.floating,
-                            duration: Duration(milliseconds: 4000),
+                            duration: Duration(milliseconds: 1500),
                             backgroundColor: Colors.green,
-                            action: SnackBarAction(
-                              textColor: Colors.white,
-                              label: 'Tamam',
-                              onPressed: () {},
-                            ),
+
                           ),);
                       }
                     else
@@ -453,19 +452,17 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content:  Text('Konum Alma Başarısız!',style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
-                            elevation: height/70,
+                            content:  Container(
+                                height: 20,
+                                child: Text('Konum Alma Başarısız!',style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,)),
+                            elevation: 10.0,
                             margin: EdgeInsets.all(height/70),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(height/65))),
                             behavior: SnackBarBehavior.floating,
-                            duration: Duration(milliseconds: 4000),
+                            duration: Duration(milliseconds: 1500),
                             backgroundColor: Colors.red,
-                            action: SnackBarAction(
-                              textColor: Colors.white,
-                              label: 'Tamam',
-                              onPressed: () {},
-                            ),
+
                           ),);
 
                       }

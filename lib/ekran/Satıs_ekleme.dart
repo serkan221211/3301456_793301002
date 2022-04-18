@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled7/model/deneme.dart';
 import 'package:untitled7/model/satis.dart';
 import 'package:uuid/uuid.dart';
 import '../model/müsteri_model.dart';
@@ -24,32 +23,34 @@ class SOF extends StatefulWidget {
 }
 
 class _SOFState extends State<SOF> {
-  var name1 = <TextEditingController>[];
-  var adet = <TextEditingController>[];
-  var money = <TextEditingController>[];
-  var sum = <TextEditingController>[];
+
+  var name1 = <TextEditingController>[]; //ürün adı
+  var adet = <TextEditingController>[];  //ürün adet
+  var money = <TextEditingController>[]; //ürün adet fiyatı
+  var sum = <TextEditingController>[];  // ürün toplam fiyatı
   var cards = <Card>[];
 
   Card createCard() {
-    var nameController = TextEditingController();
-    var adetController = TextEditingController();
-    var fiyatController = TextEditingController();
-    var sum1 = TextEditingController();
-    name1.add(nameController);
-    adet.add(adetController);
-    money.add(fiyatController);
-    sum.add(sum1);
+    var nameController = TextEditingController(); // product name controller
+    var adetController = TextEditingController(); // piece  controller
+    var fiyatController = TextEditingController(); //money controller
+    var sum1 = TextEditingController(); // sum controller
+
+    name1.add(nameController); // name controller add list
+    adet.add(adetController); // piece controller add list
+    money.add(fiyatController); //money controller add list
+    sum.add(sum1);  // sum controller add list
+
     adetController.text="0.0";
     fiyatController.text="0.0";
     sum1.text="0.0";
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-
-
-
-          Padding(//ürün adı
+          
+          Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(//ürün adı
                 autofocus: false,
@@ -67,6 +68,7 @@ class _SOFState extends State<SOF> {
 
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(//ürün adedi
@@ -116,6 +118,7 @@ class _SOFState extends State<SOF> {
 
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(//ürün fiyat
@@ -165,6 +168,7 @@ class _SOFState extends State<SOF> {
 
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(//toplam fiyat
@@ -189,20 +193,18 @@ class _SOFState extends State<SOF> {
       ),
 
     );
-
   }
+
+
   Future<List<musteri_bil>> getData() async {
     try {
-
       var response = await Dio().get("https://satis-otomasyon-api.herokuapp.com/customers");
       print("staus:"+response.statusCode.toString());
       if(response.statusCode==200)
         {
           setState(() {
             var jsona = jsonEncode(response.data);
-            dataa = (json.decode(jsona) as List)
-                .map((data) => musteri_bil.fromJson(data))
-                .toList();
+            dataa = (json.decode(jsona) as List).map((data) => musteri_bil.fromJson(data)).toList();
             print(dataa);
 
           });
@@ -211,6 +213,7 @@ class _SOFState extends State<SOF> {
           dropdownValue=dataa.first.companyName.toString();
           print(dropdownValue);
         }
+
       else
         {
           print("object"+response.statusCode.toString());
@@ -218,20 +221,23 @@ class _SOFState extends State<SOF> {
         }
 
     }
+
     catch (e) {
       print(e);
     }
     return dataa;
   }
+
+
   List<musteri_bil> dataa = [];
+
+
   @override
   void initState() {
     getData();
     super.initState();
     cards.add(createCard());
     product1=[];
-
-
   }
 
 
@@ -245,7 +251,7 @@ class _SOFState extends State<SOF> {
           ),
           child: new Container(
             decoration: new BoxDecoration(
-                color: Colors.blue[200],
+                color: Colors.lightBlue.withOpacity(0.6),
                 borderRadius: new BorderRadius.circular(10.0)
             ),
             width: 300.0,
@@ -268,10 +274,7 @@ class _SOFState extends State<SOF> {
                 new Container(
                   margin: const EdgeInsets.only(top: 25.0),
                   child: new Center(
-                    child: new Text(
-                      "Müşteri Listesi Yükleniyor...",
-                      style: new TextStyle(
-                          color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold
+                    child: new Text("Veriler  Yükleniyor...", style: new TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -285,62 +288,85 @@ class _SOFState extends State<SOF> {
   );
 
 
+
   satis? s;
   List<Product> product1=[];
 
   void PostData(satis s) async {
-
     Dio dio = new Dio();
- var    response1 = await dio.post("https://satis-otomasyon-api.herokuapp.com/satis", data: s.toJson(),options: Options(followRedirects: true,
+  var    response1 = await dio.post("https://satis-otomasyon-api.herokuapp.com/satis", data: s.toJson(),options: Options(followRedirects: true,
       // will not throw errors
       validateStatus: (status) => true,
     ));
+  if(response1.statusCode==201)
+    {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:  Text('Satış Başarılı',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
+          shape: StadiumBorder(),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(milliseconds: 2000),
+          backgroundColor: Colors.green,
+        ),);
+    }
+  else
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:  Text(response1.statusMessage.toString(),style: TextStyle(fontSize: 16,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
+          shape: StadiumBorder(),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(milliseconds: 2000),
+          backgroundColor: Colors.red,
+        ),);
+    }
     print("Code:"+response1.statusCode.toString());
     print("\nMessage"+response1.statusMessage.toString());
 
   }
 
 
-  var uuid = Uuid();
-  var uuid1 = Uuid();
-  String dropdownValue="";
-    bool loaad=false;
+  var uuid = Uuid();//uniqe id Product
+  var uuid1 = Uuid(); // uniqe id Urun
+  String dropdownValue=""; // combobox select item
+    bool loaad=false;// load data field
+
   @override
   Widget build(BuildContext context) {
+    var screen=MediaQuery.of(context);
+    var height=screen.size.height;
+    var width=screen.size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Satış"),
+        title: Text("Satış",style:TextStyle(fontSize: height/40),),
       ),
+
       body: loaad?Center(
         child: Column(
           children: <Widget>[
-
         Center(
           child: Padding(
-
-            padding: const EdgeInsets.only(top: 10,bottom: 15),
+            padding:  EdgeInsets.only(top: height/75,bottom: height/55),
             child: SizedBox(
-
-
-              child: DropdownButton
-              <String>(
-                borderRadius:BorderRadius.all(Radius.circular(20)),
+              child: DropdownButton<String>(
+                borderRadius:BorderRadius.all(Radius.circular(height/50)),
                  value:dropdownValue,
                 icon: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding:  EdgeInsets.all(height/75),
                   child: const Icon(Icons.arrow_drop_down),
                 ),
                 iconEnabledColor: Colors.blue,
                 alignment: Alignment.center,
                 elevation: 16,
                 autofocus: false,
-                iconSize: 36,
+                iconSize: height/23,
                 isDense: false,
                 isExpanded: false,
-                menuMaxHeight: 250,
+                menuMaxHeight: height/3,
                 dropdownColor: Colors.white,
-                style: const TextStyle(color: Colors.blue,),
-
+                style:  TextStyle(color: Colors.blue,),
                 underline: Container(width: 1,),
                 onChanged: (String? newValue) {
                   setState(() {
@@ -348,12 +374,11 @@ class _SOFState extends State<SOF> {
                     print(dropdownValue);
                   });
                 },
-
                 items: dataa.map<DropdownMenuItem<String>>((musteri_bil standard) {
                   return DropdownMenuItem<String>(
                     alignment: Alignment.center,
                     value: standard.companyName,
-                    child: Text(standard.companyName.toString(),style: TextStyle(fontSize: 20),textAlign: TextAlign.center,),
+                    child: Text(standard.companyName.toString(),style: TextStyle(fontSize: height/40),textAlign: TextAlign.center,),
                   );
                 }).toList(),
               ),
@@ -365,24 +390,20 @@ class _SOFState extends State<SOF> {
               child: ListView.builder(
                 itemCount: cards.length,
                 itemBuilder: (BuildContext context,  int index) {
-
                   return Container(
                     child: ListBody(
                       children: [
-
                         Padding(
-                          padding: const EdgeInsets.only(left: 155),
+                          padding:  EdgeInsets.only(left: width/2.6),
                           child: Row(
                             children: [
-
-                              Text('Ürün ${index+ 1}',style: TextStyle(fontWeight: FontWeight.bold,),),
+                              Text('Ürün ${index+ 1}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/55),),
                               IconButton(onPressed:(){
                                 setState(() {
                                   cards.removeAt(index);
                                 });
                               },  icon: Icon(Icons.delete),
                               ),
-
                             ],
                           ),
                         ),
@@ -392,35 +413,31 @@ class _SOFState extends State<SOF> {
                     ),
                   );
                 },
-
               ),
             ),
 
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding:  EdgeInsets.all(height/45),
               child: TextButton(
                 child: Text('Yeni Ürün Ekle'),
                 onPressed: ()
                 {
                   setState(() {
-                    if(adet[adet.length-1].text.isNotEmpty&&money[money.length-1].text.isNotEmpty) {
+                    if(name1[name1.length-1].text.isNotEmpty&&adet[adet.length-1].text.isNotEmpty&&money[money.length-1].text.isNotEmpty) {
                       cards.add(createCard());
                     }
                     else
                     {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text('Lütfen Boş Kolonları Doldurun.',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
+                          content:  Text('Lütfen Boş Kolonları Doldurun!',style: TextStyle(fontSize: height/45,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
                           shape: StadiumBorder(),
                           behavior: SnackBarBehavior.floating,
-                          duration: Duration(milliseconds: 3000),
+                          duration: Duration(milliseconds: 2000),
                           backgroundColor: Colors.blue[200],
-
                         ),);
                     }
-
                   }
-
                   );
                 },
               ),
@@ -430,6 +447,7 @@ class _SOFState extends State<SOF> {
       ):bodyProgress,
       floatingActionButton: new Visibility(
         visible: loaad,
+        //Send Data
         child: new FloatingActionButton(
           onPressed: (){
             double total_company=0.0;
