@@ -195,7 +195,8 @@ class _SOFState extends State<SOF> {
     try {
 
       var response = await Dio().get("https://satis-otomasyon-api.herokuapp.com/customers");
-      if(response!=null)
+      print("staus:"+response.statusCode.toString());
+      if(response.statusCode==200)
         {
           setState(() {
             var jsona = jsonEncode(response.data);
@@ -212,7 +213,7 @@ class _SOFState extends State<SOF> {
         }
       else
         {
-          print("object"+response.toString());
+          print("object"+response.statusCode.toString());
           loaad=false;
         }
 
@@ -283,17 +284,7 @@ class _SOFState extends State<SOF> {
     ),
   );
 
-  _onDone() {
-    List<PersonEntry> entries = [];
-    for (int i = 0; i < cards.length; i++) {
-      var name =name1[i].text;
-      var adett = adet[i].text;
-      var fiyat = money[i].text;
-      var sum11=sum[i].text;
-      entries.add(PersonEntry(name, adett, fiyat));
-    }
-    Navigator.pop(context, entries);
-  }
+
   satis? s;
   List<Product> product1=[];
 
@@ -309,17 +300,7 @@ class _SOFState extends State<SOF> {
 
   }
 
-  void PostData1(Product s) async {
 
-    Dio dio = new Dio();
-    var    response1 = await dio.post("https://satis-otomasyon-api.herokuapp.com/satis", data: s.toJson(),options: Options(followRedirects: true,
-      // will not throw errors
-      validateStatus: (status) => true,
-    ));
-    print("Code:"+response1.statusCode.toString());
-    print("\nMessage"+response1.statusMessage.toString());
-
-  }
   var uuid = Uuid();
   var uuid1 = Uuid();
   String dropdownValue="";
@@ -454,11 +435,11 @@ class _SOFState extends State<SOF> {
             double total_company=0.0;
             for(int i=0;i<sum.length;i++)
             {
-                total_company=double.parse(sum[i].text.toString())+total_company; 
-
+                total_company=double.parse(sum[i].text.toString())+total_company;
+                product1.add(new Product(id: uuid1.v4().toString(), money:money[i].text.toString() ,name: name1[i].text.toString(), piece: adet[i].text.toString(),sum: sum[i].text.toString()));
             }
 
-            product1.add(new Product(id: "adsas", name: "asdas", piece: "asdasd",sum: "asdas"));
+
             s=satis(id: uuid.v4().toString(),companyName: dropdownValue,date: DateTime.now().toString(),total: total_company.toString(),product: product1);
             print(product1.length.toString());
             PostData(s!);
@@ -472,15 +453,5 @@ class _SOFState extends State<SOF> {
   }
 }
 
-class PersonEntry {
-  final String name;
-  final String age;
-  final String studyJob;
 
-  PersonEntry(this.name, this.age, this.studyJob);
-  @override
-  String toString() {
-    return 'Person: name= $name, age= $age, study job= $studyJob';
-  }
-  }
 

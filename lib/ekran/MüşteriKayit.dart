@@ -1,6 +1,3 @@
-
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,6 +9,7 @@ import 'package:untitled7/model/m%C3%BCsteri_model.dart';
 import 'package:uuid/uuid.dart';
 
 
+
 class Musteri_kayit extends StatefulWidget {
   const Musteri_kayit({Key? key}) : super(key: key);
 
@@ -19,11 +17,21 @@ class Musteri_kayit extends StatefulWidget {
   State<Musteri_kayit> createState() => _Musteri_kayitState();
 }
 
-class _Musteri_kayitState extends State<Musteri_kayit> {
 
+
+
+
+class _Musteri_kayitState extends State<Musteri_kayit> {
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+  }
   String currentAddress = 'My Address';
-   Position? currentposition;
-   String? location = "";
+  Position? currentposition;
+  String? location = "";
 
   Future<Position?> _determinePosition() async {
     bool serviceEnabled;
@@ -70,10 +78,14 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
       print(e);
     }
   }
-  var uuid = Uuid();
-  String enlemm="";
-  String boylamm="";
-   musteri_bil? m1;
+
+
+  var uuid = Uuid(); // id Generate
+  String enlemm=""; // müşteri enlem
+  String boylamm=""; // müşteri boylam
+  musteri_bil? m1; // müşteri model object
+
+  //TextField Controller
   TextEditingController tfnameI= TextEditingController();
   TextEditingController tfname= TextEditingController();
   TextEditingController tfTel= TextEditingController();
@@ -86,33 +98,69 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
   TextEditingController tfkonum= TextEditingController();
 
 
-
+  // müşteri model post metot
   void basicPostRequest(musteri_bil m) async {
-
-    var response = await Dio().post("https://satis-otomasyon-api.herokuapp.com/customers", data: m.toJson(),options: Options(followRedirects: false,
-    // will not throw errors
-    validateStatus: (status) => true,
-   ));
-    print(response);
-
+    var response = await Dio().post("https://satis-otomasyon-api.herokuapp.com/customers", data: m.toJson(),options: Options(followRedirects: false, validateStatus: (status) => true,));
+     if(response.statusCode==201)
+       {
+         print("object:"+response.statusCode.toString());
+         tfil.clear();tfadres.clear();tfilce.clear();tftapdk.clear();tfTel.clear();tfvergi.clear();tfsurname.clear();tfname.clear();tfnameI.clear();tfkonum.clear();
+         Navigator.push(context, MaterialPageRoute(builder: (context) => MyDrawer()));
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(
+             content:  Text('Kayıt Başarılı.',style: TextStyle(fontSize: 900/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+             shape: StadiumBorder(),
+             behavior: SnackBarBehavior.floating,
+             duration: Duration(milliseconds: 4000),
+             backgroundColor: Colors.green,
+             action: SnackBarAction(
+               textColor: Colors.white,
+               label: 'Tamam',
+               onPressed: () {
+               },
+             ),
+           ),);
+       }
+     else
+     {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content:  Text(response.statusMessage.toString(),style: TextStyle(fontSize: 900/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+           shape: StadiumBorder(),
+           behavior: SnackBarBehavior.floating,
+           duration: Duration(milliseconds: 4000),
+           backgroundColor: Colors.red,
+           action: SnackBarAction(
+             textColor: Colors.white,
+             label: 'Tamam',
+             onPressed: () {
+             },
+           ),
+         ),);
+     }
   }
+
 
   @override
   Widget build(BuildContext context) {
+    var Screen=MediaQuery.of(context);
+    var width=Screen.size.width;
+    var height=Screen.size.height;
 
     return Scaffold(
+
       appBar: AppBar(
         centerTitle: true,
-        title: Text("MÜŞTERİ KAYIT",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,),textAlign: TextAlign.center),
+        title: Text("Müsteri Kayıt",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: height/35),textAlign: TextAlign.center),
       ),
-      body:
 
-      SingleChildScrollView(
+
+      body: SingleChildScrollView(
         child: Column(
-
           children: [
+
             Padding(
-              padding: const EdgeInsets.only(left: 10,right: 10,bottom: 10,top: 30),
+              padding:   EdgeInsets.only(left:height/70,right:height/70,bottom: height/70,top: height/35),
               child: TextField//İŞYERİ ÜNVANI
                 (
                 controller: tfnameI,
@@ -123,21 +171,23 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "İŞYERİ ÜNVANI",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),//12px
                     prefixIcon: Icon(Icons.add_business_outlined),
-                    label:Text("İŞYERİ ÜNVANI"),
+                    label:Text("İŞYERİ ÜNVANI",style: TextStyle(fontSize: height/50),),//16px
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
 
 
             ),
+
+
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField//İSİM
+              padding:  EdgeInsets.all(height/70),
+              child: TextField
                 (
                 controller: tfname,
                 autofocus: false,
@@ -147,18 +197,20 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "İSİM",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize:  height/65),
                     prefixIcon: Icon(Icons.account_circle_outlined),
-                    label:Text("İSİM"),
+                    label:Text("İSİM",style: TextStyle(fontSize: height/50),),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
+
+
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding:  EdgeInsets.all(height/70),
               child: TextField//SOYİSİM
                 (
                 controller: tfsurname,
@@ -169,18 +221,20 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "SOYİSİM",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),
                     prefixIcon: Icon(Icons.account_circle_outlined),
-                    label:Text("SOYİSİM"),
+                    label:Text("SOYİSİM",style: TextStyle(fontSize: height/50),),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
+
+
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding:  EdgeInsets.all(height/70),
               child: TextField(
                 controller: tfvergi,
                 autofocus: false,
@@ -190,18 +244,20 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "VERGİ NO",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),
                     prefixIcon: Icon(Icons.article_outlined),
-                    label:Text("VERGİ NO"),
+                    label:Text("VERGİ NO",style: TextStyle(fontSize: height/50),),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
+
+
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding:  EdgeInsets.all(height/70),
               child: TextField//TELEFON
                 (
                 controller: tfTel,
@@ -212,22 +268,22 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "TELEFON NUMARASI",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: height/65),
                     prefixIcon: Icon(Icons.phone),
-                    label:Text("TELEFON NUMARASI"),
+                    label:Text("TELEFON NUMARASI",style: TextStyle(fontSize: height/50),),
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
 
-            Padding//TAPDK NO
-              (
 
-              padding: const EdgeInsets.all(10.0),
+            Padding(
+
+              padding:  EdgeInsets.all(height/70),
               child: TextField//TAPDK NO
                 (
                 controller: tftapdk,
@@ -238,21 +294,22 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "TAPDK NO",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: height/65),
                     prefixIcon: Icon(Icons.article),
-                    label:Text("TAPDK NO"),
+                    label:Text("TAPDK NO",style: TextStyle(fontSize: height/50)),
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
 
-            Padding//İL
-              (
-              padding: const EdgeInsets.all(10.0),
+
+
+            Padding(
+              padding:  EdgeInsets.all(height/70),
               child: TextField
                 (
                 controller: tfil,
@@ -263,21 +320,22 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "İL",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: height/65),
                     prefixIcon: Icon(Icons.location_city),
-                    label:Text("İL"),
+                    label:Text("İL",style: TextStyle(fontSize: height/50),),
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
 
-            Padding//İLÇE
-              (
-              padding: const EdgeInsets.all(10.0),
+
+
+            Padding(
+              padding:  EdgeInsets.all(height/70),
               child: TextField
                 (
                 controller: tfilce,
@@ -288,20 +346,21 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "İLÇE",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: height/65),
                     prefixIcon: Icon(Icons.location_city_sharp),
-                    label:Text("İLÇE"),
+                    label:Text("İLÇE",style: TextStyle(fontSize: height/50)),
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
-            Padding
-              (
-              padding: const EdgeInsets.all(10.0),
+
+
+            Padding(
+              padding:  EdgeInsets.all(height/70),
               child: TextField//adres
                 (
                 controller: tfadres,
@@ -313,27 +372,28 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
                     hintText: "ADRES",
-                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
+                    hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: height/65),
                     prefixIcon: Icon(Icons.add_location),
-                    label:Text("ADRES"),
+                    label:Text("ADRES",style: TextStyle(fontSize: height/50)),
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(height/35),
                     )
                 ),
               ),
             ),
+
+
             Row(
 
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 12.0 , left: 12.0,right: 12.0),
-                  child: SizedBox(width: 250, height: 100,
+                  padding:  EdgeInsets.only(top: height/65 , left: height/65,right: height/65),
+                  child: SizedBox(width: 250, height: height/7.8,
                     child: TextField//Konum
                       (readOnly: true,
                       controller: tfkonum,
-
                       autofocus: false,
                       maxLines: null,
                       textAlign: TextAlign.left,
@@ -341,26 +401,28 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                       decoration: InputDecoration(
                           hintText: "Konum",
-                          hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: 12),
+                          hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black,fontSize: height/65),
                           prefixIcon: Icon(Icons.add_location),
-                          label:Text("KONUM"),
+                          label:Text("KONUM",style: TextStyle(fontSize: height/50),),
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black),
-                            borderRadius: BorderRadius.circular(25.0),
+                            borderRadius: BorderRadius.circular(height/35),
                           )
                       ),
                     ),
                   ),
                 ),
+
+
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 30.0),
+                  padding:  EdgeInsets.only(bottom: height/30),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius:  BorderRadius.circular(15),
+                      borderRadius:  BorderRadius.circular(height/45),
                       color: Colors.blue,
                     ),
-                    width: 100,height: 50,
+                    width: width/4,height: height/15,
 
                     child: TextButton(onPressed: () async {
 
@@ -372,51 +434,42 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             elevation: 10.0,
-                            margin: EdgeInsets.all(10),
-                            content: const Text('Konum Alma Başarılı.',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                            margin: EdgeInsets.all(height/70),
+                            content:  Text('Konum Alma Başarılı.',style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(12))),
+                                borderRadius: BorderRadius.all(Radius.circular(height/65))),
                             behavior: SnackBarBehavior.floating,
                             duration: Duration(milliseconds: 4000),
                             backgroundColor: Colors.green,
                             action: SnackBarAction(
                               textColor: Colors.white,
-
                               label: 'Tamam',
-                              onPressed: () {
-
-                              },
+                              onPressed: () {},
                             ),
                           ),);
-
-
                       }
                     else
                       {
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Konum Alma Başarısız!',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
-                            elevation: 10.0,
-                            margin: EdgeInsets.all(10),
+                            content:  Text('Konum Alma Başarısız!',style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                            elevation: height/70,
+                            margin: EdgeInsets.all(height/70),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(12))),
+                                borderRadius: BorderRadius.all(Radius.circular(height/65))),
                             behavior: SnackBarBehavior.floating,
                             duration: Duration(milliseconds: 4000),
                             backgroundColor: Colors.red,
                             action: SnackBarAction(
                               textColor: Colors.white,
-
                               label: 'Tamam',
-                              onPressed: () {
-
-                              },
+                              onPressed: () {},
                             ),
                           ),);
 
                       }
                     print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
-
 
                       }, child: Text("Konum Al", style: TextStyle(color: Colors.white,fontSize: 16),
                     )
@@ -428,77 +481,50 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
 
 
 
+
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text
-                ("@MEDYATOBACCO A.Ş" ,style: TextStyle(
-                  fontWeight: FontWeight.bold,color: Colors.blue
-              ),
+              padding:  EdgeInsets.all(height/75),
+              child: Text("@MEDYATOBACCO A.Ş" ,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue,fontSize: height/60),
               ),
             ),
-
-
           ],
         ),
       ),
+
+
       floatingActionButton: FloatingActionButton.extended(
         onPressed:(){
-
-
           setState(() {
             try {
               m1=musteri_bil(id: uuid.v4().toString(),companyName: tfnameI.text,name: tfname.text,surname: tfsurname.text,textNumber:tfvergi.text,telephone: tfTel.text,tapdk: tftapdk.text,district: tfilce.text,address: tfadres.text,city: tfil.text,latitude:enlemm,longitude: boylamm);
               basicPostRequest(m1!);
-              tfil.clear();tfadres.clear();tfilce.clear();tftapdk.clear();tfTel.clear();tfvergi.clear();tfsurname.clear();tfname.clear();tfnameI.clear();tfkonum.clear();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyDrawer()));
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Kayıt Başarılı.',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
-                    shape: StadiumBorder(),
-                    behavior: SnackBarBehavior.floating,
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: Colors.green,
-                    action: SnackBarAction(
-                      textColor: Colors.white,
-
-                      label: 'Tamam',
-                      onPressed: () {
-
-                      },
-                    ),
-                  ),);
-
-            }  catch(e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text("Başarısız",style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
-                    shape: StadiumBorder(),
-                    behavior: SnackBarBehavior.floating,
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: Colors.red,
-                    action: SnackBarAction(
-                      textColor: Colors.white,
-
-                      label: 'Tamam',
-                      onPressed: () {
-
-                      },
-                    ),
-                  ),);
-
             }
 
+            catch(e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:  Text(e.toString(),style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                  shape: StadiumBorder(),
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(milliseconds: 4000),
+                  backgroundColor: Colors.red,
+                  action: SnackBarAction(
+                    textColor: Colors.white,
+                    label: 'Tamam',
+                    onPressed: () {
+                    },
+                  ),
+                ),);
+            }
           }
-                );
-
-
+          );
         },
         label: const Text('KAYDET'),
-        tooltip: 'Increment',
+        tooltip: 'Kaydet',
         icon: const Icon(Icons.add_circle_outline),
+
       ),
+
     );
   }
 }
