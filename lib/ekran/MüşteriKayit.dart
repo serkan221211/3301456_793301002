@@ -496,8 +496,29 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
         onPressed:(){
           setState(() {
             try {
+              if(tfnameI.text.isNotEmpty)
+                {
               m1=musteri_bil(id: uuid.v4().toString(),companyName: tfnameI.text,name: tfname.text,surname: tfsurname.text,textNumber:tfvergi.text,telephone: tfTel.text,tapdk: tftapdk.text,district: tfilce.text,address: tfadres.text,city: tfil.text,latitude:enlemm,longitude: boylamm);
               basicPostRequest(m1!);
+              }
+
+              else
+                {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:  Text("İş Yeri Adı Boş Geçilemez!",style: TextStyle(fontSize: height/50,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.left ,),
+                      shape: StadiumBorder(),
+                      behavior: SnackBarBehavior.floating,
+                      duration: Duration(milliseconds: 4000),
+                      backgroundColor: Colors.red,
+                      action: SnackBarAction(
+                        textColor: Colors.white,
+                        label: 'Tamam',
+                        onPressed: () {
+                        },
+                      ),
+                    ),);
+                }
             }
 
             catch(e) {
