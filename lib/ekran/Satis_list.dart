@@ -16,12 +16,51 @@ class Satis_list extends StatefulWidget {
 class _Satis_listState extends State<Satis_list> {
 
   List<satis> data_product = [];
-  List<Product> data=[];
   @override
   void initState() {
     getData();
     // TODO: implement initState
     super.initState();
+  }
+
+
+  //Delete User Metot.
+  Future<void> deleteUser({required String id}) async {
+    try {
+      var res = await Dio().delete("https://satis-otomasyon-api.herokuapp.com/satis"+'/$id');
+      if(res.statusCode==200)
+      {
+        setState(() {
+          getData();
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:  Text('Silme İşlemi Başarılı.',style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
+              shape: StadiumBorder(),
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(milliseconds: 2500),
+              backgroundColor: Colors.green,
+
+            ),);
+        });
+
+      }
+      else
+      {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:  Text(res.statusMessage.toString(),style: TextStyle(fontSize: 18,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
+            shape: StadiumBorder(),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(milliseconds: 2500),
+            backgroundColor: Colors.red,
+
+          ),);
+      }
+      print('User deleted!'+res.statusCode.toString());
+    } catch (e) {
+      print('Error deleting user: $e');
+    }
   }
   void getData() async {
     try {
@@ -29,10 +68,6 @@ class _Satis_listState extends State<Satis_list> {
       setState(() {
         var jsona = jsonEncode(response.data);
         data_product = (json.decode(jsona) as List).map((data) => satis.fromJson(data)).toList();
-        data=(json.decode(jsona) as List).map((data) => Product.fromJson(data)).toList();
-        print(data.toString()+"sdds:"+data_product.length.toString());
-        print(data_product[0].product!.length);
-
       });
     }
     catch (e) {
@@ -88,10 +123,6 @@ class _Satis_listState extends State<Satis_list> {
 
 
 
-  List<String> Company=["MEDYA TİCARET"];
-  List<String> urun_name=["Calbor Yellow","Calbor Touch","Wintor","Wentor","Calbor 02","Calbor Green","Calbor Yellow","Calbor Touch","Wintor","Wentor","Calbor 02","Calbor Green"];
-  List<String> urun_Adet=["10","5","3","2","2","2","10","5","3","2","2","2"];
-  List<String> urun_fiyat=["20","30","40","50","120","12","20","30","40","50","120","12"];
 
 
   @override
@@ -137,17 +168,7 @@ class _Satis_listState extends State<Satis_list> {
                                     child: new Text('Evet',style: TextStyle(fontSize: height/50,fontWeight: FontWeight.w500)),
                                     onPressed: () {
                                       setState(() {
-
-                                        Navigator.of(context).pop();
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content:Text('Silme İşlemi Başarılı.',style: TextStyle(fontSize: height/45,fontWeight:FontWeight.bold ,color: Colors.white),textAlign:TextAlign.center ,),
-                                            shape: StadiumBorder(),
-                                            behavior: SnackBarBehavior.floating,
-                                            duration: Duration(milliseconds: 2500),
-                                            backgroundColor: Colors.green,
-
-                                          ),);
+                                        deleteUser(id: data_product[index1].id.toString());
                                       });
                                     },
                                   ),
@@ -197,13 +218,20 @@ class _Satis_listState extends State<Satis_list> {
                                       return Padding(
                                         padding:  EdgeInsets.all(height/65),
                                         child: Container(
-                                          height: 50,
-                                          color: Colors.blue.withOpacity(0.3),
+                                          decoration: BoxDecoration(
+                                              color: Colors.blue.withOpacity(0.3),
+                                            borderRadius: BorderRadius.circular(height/75)
+                                          ),
+                                          height: 60,
+
                                           child: ListTile(
 
                                           title: Column(
                                             children: [
-                                              Text(data_product[index1].product![index].name.toString()+" --> "+data_product[index1].product![index].piece.toString()+" X "+data_product[index1].product![index].money.toString()+" TL"+" Toplam: "+data_product[index1].product![index].sum.toString()+" TL",style: TextStyle(fontSize: height/55),),
+                                              Padding(
+                                                padding:  EdgeInsets.all(height/75),
+                                                child: Text(data_product[index1].product![index].name.toString()+" --> "+data_product[index1].product![index].piece.toString()+" X "+data_product[index1].product![index].money.toString()+" TL"+" Toplam: "+data_product[index1].product![index].sum.toString()+" TL",style: TextStyle(fontSize: height/55),),
+                                              ),
                                             ],
                                           ),
                                           ),
@@ -211,7 +239,16 @@ class _Satis_listState extends State<Satis_list> {
                                       );
                                       },
                                   ),
+
                                 ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child:  Text("Tamam",style: TextStyle(color:Colors.black,fontSize: height/40 )),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
                           ),
                         );
                       },

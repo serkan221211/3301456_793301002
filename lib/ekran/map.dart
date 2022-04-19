@@ -1,22 +1,33 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+// 1
+Completer<GoogleMapController> _controller = Completer();
+// 2
+ final CameraPosition _myLocation = CameraPosition(target: LatLng(0, 0),);
 
-class map extends StatefulWidget {
-  const map({Key? key}) : super(key: key);
+
+class MapScreen extends StatefulWidget {
+  const MapScreen({Key? key}) : super(key: key);
 
   @override
-  State<map> createState() => _mapState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
-class _mapState extends State<map> {
+class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-
-        title: Text("Harita",style: TextStyle(color: Colors.white,),textAlign: TextAlign.left),
-      ),
-      body:Center(
-
+      // 1
+      body: GoogleMap(
+        // 2
+        initialCameraPosition: _myLocation,
+        // 3
+        mapType: MapType.normal,
+        // 4
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
       ),
     );
   }
