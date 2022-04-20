@@ -29,9 +29,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_maps_flutter: 2.1.3
+  google_maps_flutter: ^2.1.3
   flutter_polyline_points: ^1.0.0
   font_awesome_flutter: ^8.11.0
+  google_maps_webservice: 0.0.19
+  google_maps_routes: ^1.1.2
+  huawei_map: ^5.0.3+302
+  google_maps_widget:
   geolocator: ^8.2.0
   geocoding:
   fluttertoast:

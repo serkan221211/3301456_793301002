@@ -92,7 +92,7 @@ class _MyDrawerState extends State {
               title: Text('Harita',style: TextStyle(fontSize: Screen_height/45),),
               // subtitle: Text("This is the 1st item"),
               trailing: Icon(Icons.arrow_right_outlined,size: Screen_height/23,),
-              onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => MapScreen()));
+              onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => map()));
               },
             ),
 
