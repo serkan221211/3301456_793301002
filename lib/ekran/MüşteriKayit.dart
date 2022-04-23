@@ -211,8 +211,7 @@ class _Musteri_kayitState extends State<Musteri_kayit> {
 
             Padding(
               padding:  EdgeInsets.all(height/70),
-              child: TextField//SOYİSİM
-                (
+              child: TextField(
                 controller: tfsurname,
                 autofocus: false,
                 keyboardType: TextInputType.name,

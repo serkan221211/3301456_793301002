@@ -23,6 +23,12 @@ class SOF extends StatefulWidget {
 }
 
 class _SOFState extends State<SOF> {
+  TextEditingController tfNakit= TextEditingController();
+  TextEditingController tfKart= TextEditingController();
+  TextEditingController tfToplam= TextEditingController();
+  TextEditingController tfKalan= TextEditingController();
+
+
 
   var name1 = <TextEditingController>[]; //ürün adı
   var adet = <TextEditingController>[];  //ürün adet
@@ -111,7 +117,16 @@ class _SOFState extends State<SOF> {
                   {
                     value_adet=value_adet;
                     sum1.text=(double.parse(value_adet)*double.parse(fiyatController.text)).toString();
+                    print("total_company.toString()");
+                    double total_company=0.0;
+                    for(int i=0;i<sum.length;i++)
+                    {
+                      total_company=double.parse(sum[i].text.toString())+total_company;
+                    }
+
+                    tfToplam.text=total_company.toString();
                   }
+
 
               },
 
@@ -162,6 +177,15 @@ class _SOFState extends State<SOF> {
                 {
                   value_fiyat=value_fiyat;
                   sum1.text=(double.parse(value_fiyat)*double.parse(adetController.text)).toString();
+
+
+                  double total_company=0.0;
+                  for(int i=0;i<sum.length;i++)
+                  {
+                    total_company=double.parse(sum[i].text.toString())+total_company;
+                  }
+                  print(total_company.toString());
+                  tfToplam.text=total_company.toString();
                 }
 
               },
@@ -174,6 +198,7 @@ class _SOFState extends State<SOF> {
             child: TextField(//toplam fiyat
               readOnly: true,
               autofocus: false,
+
               decoration: InputDecoration(
                   prefixIcon: Icon(Icons.article_outlined),
                   labelText: "Ürün Toplam Fiyat",
@@ -415,6 +440,117 @@ class _SOFState extends State<SOF> {
                 },
               ),
             ),
+            Row(
+
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(1.5),
+                  child: SizedBox(
+                    height: 60,
+                    width: width/4.1,
+                    child: TextField
+                      (
+                      controller: tfNakit,
+                      autofocus: false,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      decoration: InputDecoration(
+                          hintText: "Nakit",
+                          hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),
+                          label:Text("Nakit",style: TextStyle(fontSize: height/50),),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(height/60),
+                          )
+                      ),
+                      onChanged: (value)
+                      {
+                        tfKalan.text=(double.parse(tfToplam.text.isEmpty?"0":tfToplam.text)-(double.parse(tfKart.text.isEmpty?"0":tfKart.text)+double.parse(value.isEmpty?"0":value))).toString();
+
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(1.5),
+                  child: SizedBox(
+                    height: 60,
+                    width: width/4.1,
+                    child: TextField(
+                      controller: tfKart,
+                      autofocus: false,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      decoration: InputDecoration(
+                          hintText: "K.Kartı",
+                          hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),
+                          label:Text("K.Kartı",style: TextStyle(fontSize: height/50),),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(height/70),
+                          )
+                      ),
+                      onChanged: (value)
+                      {
+                        tfKalan.text=(double.parse(tfToplam.text.isEmpty?"0":tfToplam.text)-(double.parse(tfNakit.text.isEmpty?"0":tfNakit.text)+double.parse(value.isEmpty?"0":value))).toString();
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 60,
+                  width: width/4.1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.5),
+                    child: TextField(
+                      controller: tfToplam,
+                      autofocus: false,
+                      readOnly: true,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      decoration: InputDecoration(
+                          hintText: "G.Toplam",
+                          hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),
+
+                          label:Text("G.Toplam",style: TextStyle(fontSize: height/60),textAlign: TextAlign.center,),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(height/60),
+                          )
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 60,
+                  width: width/4.1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.5),
+                    child: TextField(
+                      controller: tfKalan,
+                      autofocus: false,
+                      readOnly: true,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      decoration: InputDecoration(
+                          hintText: "Kalan",
+                          hintStyle: TextStyle(fontWeight: FontWeight.w300, color: Colors.black38,fontSize: height/65),
+                          label:Text("Kalan",style: TextStyle(fontSize: height/50),textAlign: TextAlign.center,),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(height/60),
+                          )
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+
 
             Padding(
               padding:  EdgeInsets.all(height/45),
@@ -450,7 +586,7 @@ class _SOFState extends State<SOF> {
         //Send Data
         child: new FloatingActionButton(
           onPressed: (){
-            double total_company=0.0;
+           double total_company=0.0;
             for(int i=0;i<sum.length;i++)
             {
                 total_company=double.parse(sum[i].text.toString())+total_company;
@@ -458,7 +594,7 @@ class _SOFState extends State<SOF> {
             }
 
 
-            s=satis(id: uuid.v4().toString(),companyName: dropdownValue,date: DateTime.now().toString(),total: total_company.toString(),product: product1);
+            s=satis(id: uuid.v4().toString(),cash: tfNakit.text.toString(),card: tfKart.text.toString(),remainder: tfKalan.text.toString(),companyName: dropdownValue,date: DateTime.now().toString(),total: total_company.toString(),product: product1);
             print(product1.length.toString());
             PostData(s!);
 
